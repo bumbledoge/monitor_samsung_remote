@@ -1,0 +1,48 @@
+{
+  "sequence": [
+    {
+      "key": "KEY_MENU",
+      "delay": 0.4
+    },
+    {
+      "key": "KEY_ENTER",
+      "delay": 0.35
+    },
+    {
+      "key": "KEY_DOWN",
+      "delay": 0.18
+    },
+    {
+      "key": "KEY_DOWN",
+      "delay": 0.18
+    },
+    {
+      "key": "KEY_DOWN",
+      "delay": 0.18
+    },
+    {
+      "key": "KEY_ENTER",
+      "delay": 0.35
+    },
+    {
+      "key": "KEY_ENTER",
+      "delay": 0.35
+    },
+    {
+      "key": "ADJUST",
+      "delay": 0.1
+    },
+    {
+      "key": "KEY_RETURN",
+      "delay": 0.25
+    },
+    {
+      "key": "KEY_MENU",
+      "delay": 0.25
+    },
+    {
+      "key": "KEY_MENU",
+      "delay": 0.2
+    }
+  ]
+}
