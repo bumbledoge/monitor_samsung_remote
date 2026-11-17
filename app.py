@@ -402,7 +402,7 @@ class OdysseyRemoteApp(tk.Tk):
             bg_color="#0e3a47",
             hover_color="#155366",
             text_color=ACCENT_CYAN,
-            border_color="#00e5ff33",
+            border_color="#008b99",
             font=("SF Pro Text", 11, "bold"),
         ).pack(side="right", expand=True, padx=(6, 0))
 
