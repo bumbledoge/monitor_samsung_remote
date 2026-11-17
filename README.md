@@ -4,6 +4,7 @@ Control Samsung Odyssey G70B (and other Samsung Tizen Smart Monitors / Smart TVs
 
 ## Features
 
+- **Desktop Remote GUI App (`app.py`)**: Sleek Odyssey dark-theme floating remote with interactive D-pad, brightness macros, and live keyboard bindings.
 - **Automated Brightness Control (`set_brightness.py`)**: Automatically navigates the monitor's OSD via WebSocket key simulation to adjust brightness up/down and exits cleanly.
 - **Instant Live Terminal Remote (`remote_control.py`)**: Full real-time keyboard control with WASD & Arrow keys (no Enter required).
 - **Key Discovery Tool (`test_keys.py`)**: Tests candidate remote control keys against your monitor's OSD.
@@ -21,7 +22,7 @@ Control Samsung Odyssey G70B (and other Samsung Tizen Smart Monitors / Smart TVs
    ```
 
 2. **Configure IP and Token**:
-   Edit `set_brightness.py` / `remote_control.py` with your monitor's IP address and remote token if different:
+   Edit `app.py` / `set_brightness.py` / `remote_control.py` with your monitor's IP address and remote token if different:
    ```python
    MONITOR_IP = "192.168.1.129"
    TOKEN = "89413900"
@@ -31,7 +32,15 @@ Control Samsung Odyssey G70B (and other Samsung Tizen Smart Monitors / Smart TVs
 
 ## Usage
 
-### 1. Automated Brightness Adjustment
+### 1. Launch Desktop Remote App (GUI)
+```bash
+python app.py
+```
+- Click buttons or use your keyboard directly (`W`/`A`/`S`/`D`, `Arrows`, `Enter`, `Back`, `Esc`, `M`, `H`).
+- Toggle **📌 Pin** to keep the remote floating on top while working.
+- Click **🔅 Dimmer -** or **🔆 Brighter +** to run the macro with 1, 5, or 10 steps.
+
+### 2. Automated Brightness Adjustment (CLI)
 ```bash
 # Increase brightness by 5 steps
 python set_brightness.py up 5
