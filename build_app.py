@@ -29,11 +29,11 @@ def generate_icon(output_icns: Path):
     # Outer squircle / rounded app background
     margin = 70
     bg_box = [margin, margin, size - margin, size - margin]
-    draw.rounded_rectangle(bg_box, radius=200, fill="#121418", outline="#00e5ff", width=12)
+    draw.rounded_rectangle(bg_box, radius=200, fill="#121418", outline="#00e5ff", width=14)
 
     # Inner decorative cyber glow
     glow_box = [margin + 20, margin + 20, size - margin - 20, size - margin - 20]
-    draw.rounded_rectangle(glow_box, radius=180, outline="#00e5ff33", width=6)
+    draw.rounded_rectangle(glow_box, radius=180, outline="#008b99", width=6)
 
     # Monitor Screen Frame
     mon_top = 260
@@ -107,65 +107,25 @@ def generate_icon(output_icns: Path):
 
 
 def build_app():
-    print(f"Building {APP_NAME}...")
-
-    contents_dir = TARGET_APP_PATH / "Contents"
-    macos_dir = contents_dir / "MacOS"
-    resources_dir = contents_dir / "Resources"
+    print(f"Building native {APP_NAME}...")
 
     if TARGET_APP_PATH.exists():
         shutil.rmtree(TARGET_APP_PATH)
 
-    macos_dir.mkdir(parents=True, exist_ok=True)
-    resources_dir.mkdir(parents=True, exist_ok=True)
+    # 1. Compile native macOS app bundle using osacompile
+    applescript = f'do shell script "\\"{VENV_PYTHON}\\" \\"{APP_PY}\\" > /dev/null 2>&1 &"'
+    subprocess.run(["osacompile", "-o", str(TARGET_APP_PATH), "-e", applescript], check=True)
 
-    # 1. Generate icon
-    icon_path = resources_dir / "AppIcon.icns"
+    # 2. Generate and place custom cyber-cyan Odyssey icon
+    resources_dir = TARGET_APP_PATH / "Contents" / "Resources"
+    icon_path = resources_dir / "applet.icns"
     generate_icon(icon_path)
 
-    # 2. Write Info.plist
-    info_plist = f"""<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>CFBundleName</key>
-    <string>Odyssey Remote</string>
-    <key>CFBundleDisplayName</key>
-    <string>Odyssey Remote</string>
-    <key>CFBundleIdentifier</key>
-    <string>com.bumbledoge.odysseyremote</string>
-    <key>CFBundleVersion</key>
-    <string>1.0.0</string>
-    <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleSignature</key>
-    <string>????</string>
-    <key>CFBundleExecutable</key>
-    <string>OdysseyRemote</string>
-    <key>CFBundleIconFile</key>
-    <string>AppIcon</string>
-    <key>LSMinimumSystemVersion</key>
-    <string>11.0</string>
-    <key>NSHighResolutionCapable</key>
-    <true/>
-    <key>NSRequiresAquaSystemAppearance</key>
-    <false/>
-</dict>
-</plist>
-"""
-    (contents_dir / "Info.plist").write_text(info_plist, encoding="utf-8")
+    # Also copy to AppIcon.icns for compatibility
+    shutil.copy(icon_path, resources_dir / "AppIcon.icns")
 
-    # 3. Write executable launcher script
-    launcher_script = f"""#!/bin/bash
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
-cd "{PROJECT_DIR}"
-exec "{VENV_PYTHON}" "{APP_PY}"
-"""
-    executable_path = macos_dir / "OdysseyRemote"
-    executable_path.write_text(launcher_script, encoding="utf-8")
-    executable_path.chmod(0o755)
+    # 3. Touch app bundle to refresh LaunchServices / Finder cache
+    subprocess.run(["touch", str(TARGET_APP_PATH)], check=True)
 
     print(f"\nSUCCESS: Installed application to {TARGET_APP_PATH}")
     print("You can now open it from Spotlight, Launchpad, or the Applications folder!")

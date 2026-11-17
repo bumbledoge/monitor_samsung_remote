@@ -298,6 +298,21 @@ class OdysseyRemoteApp(tk.Tk):
         self._build_ui()
         self._bind_keyboard_shortcuts()
 
+        # Center on screen and bring to front
+        self.update_idletasks()
+        screen_w = self.winfo_screenwidth()
+        screen_h = self.winfo_screenheight()
+        w = 380
+        h = 690
+        x = max(50, (screen_w - w) // 2)
+        y = max(50, (screen_h - h) // 2)
+        self.geometry(f"{w}x{h}+{x}+{y}")
+
+        self.lift()
+        self.attributes("-topmost", True)
+        self.after(600, lambda: self.attributes("-topmost", False))
+        self.focus_force()
+
     def _build_ui(self):
         # 1. Header Frame
         header = tk.Frame(self, bg=BG_MAIN)
